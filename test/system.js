@@ -1,33 +1,30 @@
 'use strict';
 
+require('../server.js');
+
 const http = require('http');
 const assert = require('assert').strict;
-const { Worker } = require('worker_threads');
-
-const worker = new Worker('./lib/worker.js');
 
 const HOST = '127.0.0.1';
-const PORT = 8000;
-const START_TIMEOUT = 1000;
+const PORT = 8001;
+const START_DELAY = 2000;
+const TEST_DELAY = 100;
 const TEST_TIMEOUT = 3000;
 
 let callId = 0;
 
 console.log('System test started');
 setTimeout(async () => {
-  worker.postMessage({ name: 'stop' });
+  console.log('System test finished');
+  process.exit(0);
 }, TEST_TIMEOUT);
 
-worker.on('exit', code => {
-  console.log(`System test finished with code ${code}`);
-});
-
 const tasks = [
-  { get: '/', status: 302 },
+  { get: '/', port: 8000, status: 302 },
   { get: '/console.js' },
   {
     post: '/api',
-    method: 'signIn',
+    method: 'auth/signIn',
     args: { login: 'marcus', password: 'marcus' }
   }
 ];
@@ -35,7 +32,7 @@ const tasks = [
 const getRequest = task => {
   const request = {
     host: HOST,
-    port: PORT,
+    port: task.port || PORT,
     agent: false
   };
   if (task.get) {
@@ -66,7 +63,7 @@ setTimeout(() => {
       const expectedStatus = task.status || 200;
       setTimeout(() => {
         assert.equal(res.statusCode, expectedStatus);
-      }, TEST_TIMEOUT);
+      }, TEST_DELAY);
     });
     req.on('error', err => {
       console.log(err.stack);
@@ -74,4 +71,4 @@ setTimeout(() => {
     if (task.data) req.write(task.data);
     req.end();
   });
-}, START_TIMEOUT);
+}, START_DELAY);
