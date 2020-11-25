@@ -33,7 +33,7 @@
   "scripts": {
     "test": "npm run -s lint && node test/all.js",
     "lint": "eslint .",
-    "install": "application/cert/generate.sh"
+    "install": "cert/generate.sh"
   },
   "repository": {
     "type": "git",
@@ -47,10 +47,10 @@
     "node": ">=12.9.0"
   },
   "devDependencies": {
-    "eslint": "^7.13.0"
+    "eslint": "^7.4.0"
   },
   "dependencies": {
-    "pg": "^8.5.1",
-    "ws": "^7.4.0"
+    "pg": "^8.3.0",
+    "ws": "^7.3.1"
   }
 }

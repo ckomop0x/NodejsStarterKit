@@ -15,9 +15,9 @@ assert(Config);
 const PATH = process.cwd();
 
 (async () => {
-  const configPath = path.join(PATH, 'application/config');
+  const configPath = path.join(PATH, 'config');
   const config = await new Config(configPath);
-  const databaseConfig = config.database;
+  const databaseConfig = config.sections.database;
   const database = new Database(databaseConfig);
 
   const empty = 'empty';
